@@ -1,11 +1,13 @@
 import './App.css'
+import Header from './Components/Header'
+import Sidebar from './Components/Sidebar'
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      
+    <Header /> 
+    <Sidebar />
     </>
   )
 }

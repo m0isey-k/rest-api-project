@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+    /** Theme primary colors */
+    --color-primary-a0: #698260;
+    --color-primary-a10: #798f70;
+    --color-primary-a20: #899d81;
+    --color-primary-a30: #99aa92;
+    --color-primary-a40: #a9b8a4;
+    --color-primary-a50: #bac6b5;
+
+    /** Dark theme surface colors */
+    --color-surface-a0: #121212;
+    --color-surface-a10: #282828;
+    --color-surface-a20: #3f3f3f;
+    --color-surface-a30: #575757;
+    --color-surface-a40: #717171;
+    --color-surface-a50: #8b8b8b;
+}
+.tile {
+    @apply w-full bg-surface-a10 text-white rounded-lg shadow-[0_0_1px_1px] shadow-primary-a0;
+}
+
+.active {
+    color: white;
+}
+
+.width-inherit {width: inherit}
+
+body {background-color: #121212;}
+
