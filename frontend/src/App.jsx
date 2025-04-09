@@ -1,33 +1,42 @@
-import './App.css'
-import Header from './Components/Header'
-import Sidebar from './Components/Sidebar'
-import Card from './Components/Card'
+import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import page_routes from './Layouts/page_routes';
+import DefaultLayout from './Layouts/DefaultLayout';
+import AuthLayout from './Layouts/AuthLayout';
 
 
 function App() {
-    const cards = []
-    for(let i = 0; i < 20; i++) {
-        cards.push(<Card />)
-    }
   return (
     <>
-    <Header /> 
-        <div className="mt-16 grid grid-cols-6 gap-8">
-            <div className="col-span-1">
-                <div className="sticky top-16">
-                    <Sidebar />
-                </div>
-            </div>
-            <div className="col-span-5">
-                <div className="flex">
-                    <p className="text-xl text-white">Test Collection</p>
-                    <i className="fa-solid fa-bars my-auto ml-2 text-surface-a20 hover:text-white transition cursor-pointer"></i>
-                </div>
-                <div className="mt-4 flex flex-wrap gap-8">
-                    {cards}
-                </div>
-            </div>
-        </div>
+      <Router>
+        <Routes>
+      {page_routes.map(({ path, page: Page, layout, protected: isProtected }, index) => {
+          const Layout = (() => {
+            switch (layout) {
+              case 'default':
+                return DefaultLayout;
+              case 'auth':
+                return AuthLayout;
+              default:
+                return layout || React.Fragment;
+            }
+          })();
+          const Element = (
+            <Layout>
+              <Page />
+            </Layout>
+          );
+          return (
+            <Route
+              key={index}
+              path={path}
+              element={isProtected ? Element : Element}
+            />
+          );
+        })}
+      </Routes>
+    </Router>
     </>
   )
 }
