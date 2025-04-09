@@ -26,7 +26,8 @@ function Header(){
     }, []);
     return(
         <>
-        <nav className="border-b-1 border-primary-a0 fixed top-0 w-full z-50 select-none">
+        <div>
+        <nav className="border-b-1 bg-surface-a0 border-primary-a0 fixed top-0 w-full z-50 select-none">
             <div className="px-5 flex flex-wrap items-center justify-between mx-auto h-12"> 
                 <a href="https://github.com/m0isey-k/rest-api-project" target="_blank"><i className="fa-brands fa-github text-3xl text-white"></i></a>
                 <form className="flex items-center max-w-sm w-80">   
@@ -53,6 +54,7 @@ function Header(){
                 </div>
             </div>
         </nav>
+        </div>
         </>
     );
 }
