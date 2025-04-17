@@ -1,9 +1,7 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import page_routes from './Layouts/page_routes';
-import DefaultLayout from './Layouts/DefaultLayout';
-import AuthLayout from './Layouts/AuthLayout';
+import page_routes from './Pages/page_routes';
 
 
 function App() {
@@ -11,27 +9,12 @@ function App() {
     <>
       <Router>
         <Routes>
-      {page_routes.map(({ path, page: Page, layout, protected: isProtected }, index) => {
-          const Layout = (() => {
-            switch (layout) {
-              case 'default':
-                return DefaultLayout;
-              case 'auth':
-                return AuthLayout;
-              default:
-                return layout || React.Fragment;
-            }
-          })();
-          const Element = (
-            <Layout>
-              <Page />
-            </Layout>
-          );
+      {page_routes.map(({ path, page: Page, protected: isProtected }, index) => {
           return (
             <Route
               key={index}
               path={path}
-              element={isProtected ? Element : Element}
+              element={isProtected ? <Page /> : <Page />} //TEST
             />
           );
         })}
