@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from api.views import CreateUserView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from api.views import CreateUserView, CustomTokenObtainPairView, LogoutView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -26,7 +26,8 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path("admin/", admin.site.urls),
     path("api/user/register/", CreateUserView.as_view(), name="register"),
-    path("api/token/", TokenObtainPairView.as_view(), name="get_token"),
+    path("api/user/logout/", LogoutView.as_view(), name="logout"),
+    path("api/token/", CustomTokenObtainPairView.as_view(), name="get_token"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("api-auth/", include("rest_framework.urls")),
 ]

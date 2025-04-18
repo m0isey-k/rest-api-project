@@ -1,7 +1,7 @@
 import Input from "../Components/Input";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { login } from "../api";
 
 const USER_REGEX = /^(?=.{3,}$)[a-z0-9]+(_|-)*[a-z0-9]+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -32,25 +32,17 @@ function Login(){
             return;
         }
         try {
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/token/",
-                JSON.stringify({username: user.value, password: pwd.value}),
-                {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            console.log(response.data)
+            const response = await login(user.value, pwd.value);
             navigate('/')
-        } catch (err) {
-            console.log(err)
+        }
+        catch(err) {
             if (!err?.response) {
                 setError('No Server Response');
             } else {
                 setError('Login Failed')
             }
         }
-    };
+    }
 
 
     return(

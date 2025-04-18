@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router";
 import Input from "../Components/Input";
 import axios from "axios";
+import { signup } from "../api";
 
 const USER_REGEX = /^(?=.{3,}$)[a-z0-9]+(_|-)*[a-z0-9]+$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -39,25 +40,14 @@ function SignUp() {
             return;
         }
         try {
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/user/register/",
-                JSON.stringify({username: user.value, email: email.value, password: pwd.value}),
-                {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }
-            );
-
-            console.log(response?.data);
+            const response = await signup(user.value, email.value, pwd.value);
             navigate('/')
-        } catch (err) {
+        }
+        catch(err) {
             if (!err?.response) {
                 setError('No Server Response');
-            } else if (err.response?.status === 409) {
-                setError('Username Taken');
             } else {
-                setError('Registration Failed')
+                setError('Login Failed')
             }
         }
     };

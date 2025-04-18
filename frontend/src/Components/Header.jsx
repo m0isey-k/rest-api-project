@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
+import { logout } from '../api';
+import { useNavigate } from 'react-router-dom';
 
 function Header(){
+    const navigate = useNavigate()
     const dropdownItems = ['Books', 'Films', 'Games']
     const dropdownIcons = ['book', 'film', 'gamepad']
 
@@ -24,6 +27,14 @@ function Header(){
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+    const handleLogout = async () => {
+        try {
+            await logout()
+            navigate('/login')
+        } catch(e) {
+            console.error(e)
+        }
+    }
     return(
         <>
         <div>
@@ -51,6 +62,7 @@ function Header(){
                         </ul>
                     </div>
                     <a href="/" className="text-white cursor-pointer font-medium">Home</a>
+                    <p onClick={handleLogout} className="text-white pl-2">Logout</p>
                 </div>
             </div>
         </nav>
