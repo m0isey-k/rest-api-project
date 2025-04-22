@@ -40,3 +40,10 @@ class LogoutView(APIView):
         response.delete_cookie('access_token')
         response.delete_cookie('refresh_token')
         return response
+
+
+class IsAuthenticatedView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        return Response({'is_authenticated': True})
