@@ -20,11 +20,22 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         access_token = response.data["access"]
+        refresh_token = response.data["refresh"]
+
         response.set_cookie(
             key="access_token",
             value=access_token,
             path="/",
             expires=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
+            secure=True,
+            httponly=True,
+            samesite="Lax",
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            path="/",
+            expires=settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
             secure=True,
             httponly=True,
             samesite="Lax",
@@ -38,8 +49,9 @@ class LogoutView(APIView):
     def post(self, request):
         try:
             res = Response()
-            res.data = {'success':True}
             res.delete_cookie('access_token')
+            res.delete_cookie('refresh_token')
+            res.data = {'success':True}
 
             return res
         except Exception as e:
