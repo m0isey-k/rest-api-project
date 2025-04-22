@@ -4,10 +4,6 @@ const API_URL = "http://localhost:8000/api/"
 const api = axios.create({
     baseURL: API_URL,
     withCredentials: true,
-    headers: {
-        "Content-Type": "application/json",
-        
-    },
 })
 
 export const signup = async (username, email, password) => {
@@ -17,7 +13,7 @@ export const signup = async (username, email, password) => {
         password: password,
     }))
     
-    return response
+    return response.data
 }
 
 export const login = async (username, password) => {
@@ -26,10 +22,20 @@ export const login = async (username, password) => {
         password: password
     })
 
-    return response
+    return response.data
 }
 
 export const logout = async () => {
-    const response = await api.post("user/logout/");
-    return response
+    try {
+        const response = await api.post("user/logout/");
+        return response.data
+    } catch(err) {
+        console.error(err)
+        return null
+    }
 };
+
+export const checkAuth = async() => {
+    const response = await api.post("user/status/")
+    return response.data
+}

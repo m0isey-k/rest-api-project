@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import page_routes from './Pages/page_routes';
+import ProtectedRoute from './Components/ProtectedRoute';
 
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
             <Route
               key={index}
               path={path}
-              element={isProtected ? <Page /> : <Page />} //TEST
+              element={isProtected ? <ProtectedRoute><Page /></ProtectedRoute> : <Page />} //TEST
             />
           );
         })}

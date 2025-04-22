@@ -33,17 +33,23 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 class LogoutView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        response = Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
-        return response
+        try:
+            res = Response()
+            res.data = {'success':True}
+            res.delete_cookie('access_token')
+
+            return res
+        except Exception as e:
+            print(e)
+            return Response({'success':False})
+
 
 
 class IsAuthenticatedView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request):
         return Response({'is_authenticated': True})
