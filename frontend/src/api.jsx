@@ -27,7 +27,7 @@ export const login = async (username, password) => {
 
 export const logout = async () => {
     try {
-        const response = await api.post("user/logout/");
+        const response = await api.get("user/logout/");
         return response.data
     } catch(err) {
         console.error(err)
