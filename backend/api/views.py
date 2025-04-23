@@ -8,6 +8,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+import requests
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -65,3 +67,13 @@ class IsAuthenticatedView(APIView):
 
     def post(self, request):
         return Response({'is_authenticated': True})
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) 
+def get_books(request):
+    term = request.GET.get("q")
+    query = '+'.join(term.split())
+    url = f"https://www.googleapis.com/books/v1/volumes?q={query}"
+    response = requests.get(url)
+    return Response(response.json(), status=response.status_code)
