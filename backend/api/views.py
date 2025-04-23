@@ -46,7 +46,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def get(self, request):
         try:
             res = Response()
             res.delete_cookie('access_token')
