@@ -72,7 +72,8 @@ class IsAuthenticatedView(APIView):
 @api_view(['GET'])
 @permission_classes([AllowAny]) 
 def get_books(request):
-    term = request.GET.get("q")
+    term = request.GET.get("query")
+    print(term)
     query = '+'.join(term.split())
     url = f"https://www.googleapis.com/books/v1/volumes?q={query}"
     response = requests.get(url)

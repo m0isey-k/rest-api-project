@@ -8,8 +8,8 @@ function Home(){
     const [search, setSearch] = useState("")
     const handleSearch = async (term) => {
         setSearch(term)
-        console.log("Search for:", term.split(' ').join('+'))
-        const response = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${term.split(' ').join('+')}`)
+        console.log("Search for:", term)
+        const response = await axios.get(`http://localhost:8000/api/get-books/`, {params: { query: term }})
         console.log(response)
     }
 
