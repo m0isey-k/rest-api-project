@@ -7,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 
 
@@ -16,6 +16,34 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        user = User.objects.get(id=response.data["id"])
+
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            path="/",
+            expires=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
+            secure=True,
+            httponly=True,
+            samesite="Lax",
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            path="/",
+            expires=settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
+            secure=True,
+            httponly=True,
+            samesite="Lax",
+        )
+        return response
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

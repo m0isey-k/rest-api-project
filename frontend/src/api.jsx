@@ -7,11 +7,11 @@ const api = axios.create({
 })
 
 export const signup = async (username, email, password) => {
-    const response = await api.post("user/register/", JSON.stringify({
+    const response = await api.post("user/register/", {
         username: username,
         email: email,
         password: password,
-    }))
+    })
     
     return response.data
 }
