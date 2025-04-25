@@ -69,12 +69,26 @@ class IsAuthenticatedView(APIView):
         return Response({'is_authenticated': True})
 
 
-@api_view(['GET'])
-@permission_classes([AllowAny]) 
-def get_books(request):
-    term = request.GET.get("query")
-    print(term)
+class SearchView(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        term = request.GET.get("query")
+        res = get_books(term)
+
+        return Response(res)
+    
+
+def get_books(term):   
     query = '+'.join(term.split())
     url = f"https://www.googleapis.com/books/v1/volumes?q={query}"
-    response = requests.get(url)
-    return Response(response.json(), status=response.status_code)
+    response = requests.get(url).json()
+    result = []
+    for item in response['items']:
+        info = item['volumeInfo']
+        result.append({
+            'id':  item['id'],
+            'title': info['title'],
+            'thumbnail': info['imageLinks']['thumbnail']
+        })
+
+    return result

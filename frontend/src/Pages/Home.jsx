@@ -9,8 +9,8 @@ function Home(){
     const handleSearch = async (term) => {
         setSearch(term)
         console.log("Search for:", term)
-        const response = await axios.get(`http://localhost:8000/api/get-books/`, {params: { query: term }})
-        console.log(response)
+        const response = await axios.get(`http://localhost:8000/api/search/`, {params: { query: term }})
+        console.log(response.data)
     }
 
     const cards = []
