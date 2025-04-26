@@ -1,5 +1,4 @@
-import Header from "../Components/Header";
-import Sidebar from "../Components/Sidebar";
+import DefaultLayout from "./DefaultLayout";
 import Card from "../Components/Card";
 import { useState } from "react";
 import { get_search } from "../api";
@@ -19,23 +18,11 @@ function Home(){
 
     return(
         <>
-        <Header onSearch={handleSearch}/>
-        <div className="mt-16 grid grid-cols-6 gap-8">
-            <div className="col-span-1">
-                <div className="sticky top-16">
-                    <Sidebar />
-                </div>
-            </div>
-            <div className="col-span-5">
-        <div className="flex">
-            <p className="text-xl text-white">Search</p>
-            <i className="fa-solid fa-bars my-auto ml-2 text-surface-a20 hover:text-white transition cursor-pointer"></i>
-        </div>
+        <DefaultLayout title="Home" handleSearch={handleSearch} content={
         <div className="mt-4 flex flex-wrap items-start gap-8">
             {cards}
         </div>
-            </div>
-        </div>
+        } />
         </>
     )
 }

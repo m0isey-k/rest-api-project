@@ -1,5 +1,4 @@
-import Sidebar from "../Components/Sidebar"
-import Header from "../Components/Header"
+import DefaultLayout from "./DefaultLayout"
 import Loading from "../Components/Loading"
 
 import { useParams } from "react-router-dom"
@@ -9,9 +8,6 @@ import { useState, useEffect } from "react"
 function Details(){
     const { type, id } = useParams()
     const [data, setData] = useState()
-    const handleSearch = async () => {
-        console.log("search") // TODO
-    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,7 +15,6 @@ function Details(){
                 let result 
                 switch(type) {
                     case "book":
-                        console.log("book search")
                         result = await get_book_details(id)
                         setData(result)
                         break;
@@ -38,18 +33,7 @@ function Details(){
     return(
         data ? (
         <>
-        <Header onSearch={handleSearch}/>
-        <div className="mt-16 grid grid-cols-6 gap-8">
-            <div className="col-span-1">
-                <div className="sticky top-16">
-                    <Sidebar />
-                </div>
-            </div>
-            <div className="col-span-5">
-        <div className="flex">
-            <p className="text-xl text-white">{data.title}</p>
-            <i className="fa-solid fa-bars my-auto ml-2 text-surface-a20 hover:text-white transition cursor-pointer"></i>
-        </div>
+        <DefaultLayout title={data.title} content={
         <div className="mt-4 flex">
             <img src={data.thumbnail} className="w-80 rounded-xl object-cover border border-surface-a30 select-none"/>
             <div className="mx-8 text-white text-lg">
@@ -63,8 +47,7 @@ function Details(){
                 </div>
             </div>
         </div>
-            </div>
-        </div>
+        }/>
         </>
         ):(<Loading />)
     )
