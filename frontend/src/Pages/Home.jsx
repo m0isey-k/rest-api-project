@@ -6,16 +6,17 @@ import axios from "axios";
 
 function Home(){
     const [search, setSearch] = useState("")
+    const [cards, setCards] = useState([]) 
+
     const handleSearch = async (term) => {
         setSearch(term)
-        console.log("Search for:", term)
+        setCards([])
         const response = await axios.get(`http://localhost:8000/api/search/`, {params: { query: term }})
-        console.log(response.data)
-    }
+        const data = response.data
+        data.map(item => {
+            setCards(p => [...p, <Card key={item.id} title={item.title} thumbnail={item.thumbnail}/>])
+        })
 
-    const cards = []
-    for(let i = 0; i < 20; i++) {
-        cards.push(<Card key={i}/>)
     }
     return(
         <>
@@ -31,7 +32,7 @@ function Home(){
             <p className="text-xl text-white">Home</p>
             <i className="fa-solid fa-bars my-auto ml-2 text-surface-a20 hover:text-white transition cursor-pointer"></i>
         </div>
-        <div className="mt-4 flex flex-wrap gap-8">
+        <div className="mt-4 flex flex-wrap items-start gap-8">
             {cards}
         </div>
             </div>
