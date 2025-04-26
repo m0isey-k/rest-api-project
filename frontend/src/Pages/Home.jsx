@@ -2,22 +2,21 @@ import Header from "../Components/Header";
 import Sidebar from "../Components/Sidebar";
 import Card from "../Components/Card";
 import { useState } from "react";
-import axios from "axios";
+import { get_books, get_book_details } from "../api";
+import { useNavigate } from "react-router-dom";
 
 function Home(){
-    const [search, setSearch] = useState("")
+    const navigate = useNavigate()
     const [cards, setCards] = useState([]) 
 
     const handleSearch = async (term) => {
-        setSearch(term)
+        const data = await get_books(term)
         setCards([])
-        const response = await axios.get(`http://localhost:8000/api/search/`, {params: { query: term }})
-        const data = response.data
         data.map(item => {
-            setCards(p => [...p, <Card key={item.id} title={item.title} thumbnail={item.thumbnail}/>])
+            setCards(p => [...p, <Card key={item.id} title={item.title} thumbnail={item.thumbnail} authors={item.authors} onClick={() => navigate(`/book/${item.id}`)} />])
         })
-
     }
+
     return(
         <>
         <Header onSearch={handleSearch}/>
@@ -29,7 +28,7 @@ function Home(){
             </div>
             <div className="col-span-5">
         <div className="flex">
-            <p className="text-xl text-white">Home</p>
+            <p className="text-xl text-white">Search</p>
             <i className="fa-solid fa-bars my-auto ml-2 text-surface-a20 hover:text-white transition cursor-pointer"></i>
         </div>
         <div className="mt-4 flex flex-wrap items-start gap-8">
