@@ -35,7 +35,17 @@ export const logout = async () => {
     }
 };
 
-export const checkAuth = async() => {
+export const checkAuth = async () => {
     const response = await api.post("user/status/")
+    return response.data
+}
+
+export const get_books = async (term) => {
+    const response = await api.get("search/", {params: { query: term }})
+    return response.data
+}
+
+export const get_book_details = async (id) => {
+    const response = await api.get(`book-details/`, {params: { id: id }})
     return response.data
 }

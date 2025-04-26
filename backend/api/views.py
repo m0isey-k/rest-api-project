@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework import generics
@@ -75,7 +74,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, _):
         try:
             res = Response()
             res.delete_cookie('access_token')
@@ -92,12 +91,13 @@ class LogoutView(APIView):
 class IsAuthenticatedView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, _):
         return Response({'is_authenticated': True})
 
 
 class SearchView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         term = request.GET.get("query")
         res = get_books(term)
@@ -109,13 +109,46 @@ def get_books(term):
     query = '+'.join(term.split())
     url = f"https://www.googleapis.com/books/v1/volumes?q={query}&maxResults=40"
     response = requests.get(url).json()
-    result = []
+    data = []
     for item in response['items']:
         info = item['volumeInfo']
-        result.append({
+        thumbnail = info.get("imageLinks", {}).get("thumbnail", "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg")
+        authors = info.get("authors", "Unkown")
+
+        data.append({
             'id':  item['id'],
             'title': info['title'],
-            'thumbnail': info['imageLinks']['thumbnail']
+            'thumbnail': thumbnail, 
+            'authors': authors,
         })
 
-    return result
+    return data
+
+
+class BookDetailsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        id = request.GET.get("id")
+        url = f"https://www.googleapis.com/books/v1/volumes/{id}"
+        response = requests.get(url).json()
+        info = response['volumeInfo']
+
+        thumbnail = info.get("imageLinks", {}).get("small", "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg")
+
+        decription = info['description']
+        decription = decription.replace('<br>', '').replace('<p>', '').replace('</p>', '')
+
+        data = {
+                'id': id,
+                'title': info['title'],
+                'authors': info['authors'],
+                'description': decription, 
+                'categories': info['categories'],
+                'thumbnail': thumbnail,
+                'pageCount': info['pageCount'],
+                'publishedDate': info['publishedDate'],
+        }
+
+        return Response(data) 
+
