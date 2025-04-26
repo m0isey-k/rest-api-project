@@ -2,7 +2,7 @@ import Header from "../Components/Header";
 import Sidebar from "../Components/Sidebar";
 import Card from "../Components/Card";
 import { useState } from "react";
-import { get_books, get_book_details } from "../api";
+import { get_search } from "../api";
 import { useNavigate } from "react-router-dom";
 
 function Home(){
@@ -10,10 +10,10 @@ function Home(){
     const [cards, setCards] = useState([]) 
 
     const handleSearch = async (term) => {
-        const data = await get_books(term)
+        const data = await get_search(term)
         setCards([])
         data.map(item => {
-            setCards(p => [...p, <Card key={item.id} title={item.title} thumbnail={item.thumbnail} authors={item.authors} onClick={() => navigate(`/book/${item.id}`)} />])
+            setCards(p => [...p, <Card key={item.id} title={item.title} thumbnail={item.thumbnail} authors={item.authors} onClick={() => navigate(`/${item.type}/${item.id}`)} />])
         })
     }
 
