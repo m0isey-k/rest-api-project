@@ -100,8 +100,8 @@ class SearchView(APIView):
 
     def get(self, request):
         term = request.GET.get("query")
-        res = get_books(term)
-
+        # res = get_books(term)
+        res = get_movies(term), get_books(term)
         return Response(res)
     
 
@@ -123,6 +123,53 @@ def get_books(term):
         })
 
     return data
+
+
+def get_movies(term):
+    query = '+'.join(term.split())
+    headers = {
+    "accept": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMTZkNzNlYWY0NDNkM2Y5OGE5Y2RhNGRjYTdhNDYwMSIsIm5iZiI6MTc0NTY4NDEyOS4xMTAwMDAxLCJzdWIiOiI2ODBkMDZhMTgwNzdkMjU4MDEzN2IzNzEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.xEul5JoXfa-5W2Nai5Ign4QvS1bMGX1pB6YH244odm0"}
+    all_results = []
+    for i in range(1,3):
+        url = f"https://api.themoviedb.org/3/search/movie?query={query}&include_adult=false&language=en-US&page={i}"
+        response = requests.get(url, headers=headers)
+        data = response.json()
+        all_results.extend(data['results'])
+    genres = {
+        28: "Action",
+        12: "Adventure",
+        16: "Animation",
+        35: "Comedy",
+        80: "Crime",
+        99: "Documentary",
+        18: "Drama",
+        10751: "Family",
+        14: "Fantasy",
+        36: "History",
+        27: "Horror",
+        10402: "Music",
+        9648: "Mystery",
+        10749: "Romance",
+        878: "Science Fiction",
+        10770: "TV Movie",
+        53: "Thriller",
+        10752: "War",
+        37: "Western"
+    }
+    
+
+    result = []
+    for item in all_results:
+        result.append({ 
+            'id':  item['id'],
+            'title': item['title'],
+            'description': item['overview'],
+            'thumbnail': f"https://image.tmdb.org/t/p/original/{item['poster_path']}",
+            'categories': [genres.get(genre_id) for genre_id in item['genre_ids']]
+
+        })
+    return result
 
 
 class BookDetailsView(APIView):
@@ -151,4 +198,3 @@ class BookDetailsView(APIView):
         }
 
         return Response(data) 
-
