@@ -40,12 +40,17 @@ export const checkAuth = async () => {
     return response.data
 }
 
-export const get_books = async (term) => {
+export const get_search = async (term) => {
     const response = await api.get("search/", {params: { query: term }})
     return response.data
 }
 
 export const get_book_details = async (id) => {
     const response = await api.get(`book-details/`, {params: { id: id }})
+    return response.data
+}
+
+export const get_movie_details = async (id) => {
+    const response = await api.get(`movie-details/`, {params: { id: id }})
     return response.data
 }
