@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { logout } from '../api';
 import { useNavigate } from 'react-router-dom';
 
-function Header({ onSearch }){
-    const [inputValue, setInputValue] = useState("")
+function Header(){
+    const [term, setTerm] = useState("")
     const navigate = useNavigate()
     const dropdownItems = ['Books', 'Films', 'Games']
     const dropdownIcons = ['book', 'film', 'gamepad']
@@ -39,9 +39,9 @@ function Header({ onSearch }){
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if(inputValue) {
-            onSearch(inputValue)
-            setInputValue("")
+        if(term) {
+            navigate(`/search/${term}`) 
+            setTerm("")
         }
     }
     return(
@@ -54,8 +54,8 @@ function Header({ onSearch }){
                     <div className="relative w-full">
                         <input
                             type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
+                            value={term}
+                            onChange={(e) => setTerm(e.target.value)}
                             className="bg-surface-a20 h-8 text-white placeholder-neutral-400 rounded-full block w-full p-3  shadow-[0_0_1px_1px] shadow-primary-a0 hover:shadow-[0_0_5px_1px] focus:shadow-[0_0_5px_1px] duration-150 focus:outline-none selection:bg-surface-a50"
                             placeholder="Search..."
                         />
