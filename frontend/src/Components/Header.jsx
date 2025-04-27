@@ -3,6 +3,7 @@ import { logout } from '../api';
 import { useNavigate } from 'react-router-dom';
 
 function Header(){
+    const [term, setTerm] = useState("")
     const navigate = useNavigate()
     const dropdownItems = ['Books', 'Films', 'Games']
     const dropdownIcons = ['book', 'film', 'gamepad']
@@ -35,15 +36,29 @@ function Header(){
             console.error(e)
         }
     }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        if(term) {
+            navigate(`/search/${term}`) 
+            setTerm("")
+        }
+    }
     return(
         <>
         <div>
         <nav className="border-b-1 bg-surface-a0 border-primary-a0 fixed top-0 w-full z-50 select-none">
             <div className="px-5 flex flex-wrap items-center justify-between mx-auto h-12"> 
                 <a href="https://github.com/m0isey-k/rest-api-project" target="_blank"><i className="fa-brands fa-github text-3xl text-white"></i></a>
-                <form className="flex items-center max-w-sm w-80">   
+                <form onSubmit={handleSubmit} className="flex items-center max-w-sm w-80">   
                     <div className="relative w-full">
-                        <input type="text" className="bg-surface-a20 h-8 text-white placeholder-neutral-400 rounded-full block w-full p-3  shadow-[0_0_1px_1px] shadow-primary-a0 hover:shadow-[0_0_5px_1px] focus:shadow-[0_0_5px_1px] duration-150 focus:outline-none selection:bg-surface-a50" placeholder="Search..." />
+                        <input
+                            type="text"
+                            value={term}
+                            onChange={(e) => setTerm(e.target.value)}
+                            className="bg-surface-a20 h-8 text-white placeholder-neutral-400 rounded-full block w-full p-3  shadow-[0_0_1px_1px] shadow-primary-a0 hover:shadow-[0_0_5px_1px] focus:shadow-[0_0_5px_1px] duration-150 focus:outline-none selection:bg-surface-a50"
+                            placeholder="Search..."
+                        />
                     </div>
                 </form>
                 <div className="flex">

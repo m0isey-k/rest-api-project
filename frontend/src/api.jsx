@@ -7,11 +7,11 @@ const api = axios.create({
 })
 
 export const signup = async (username, email, password) => {
-    const response = await api.post("user/register/", JSON.stringify({
+    const response = await api.post("user/register/", {
         username: username,
         email: email,
         password: password,
-    }))
+    })
     
     return response.data
 }
@@ -27,7 +27,7 @@ export const login = async (username, password) => {
 
 export const logout = async () => {
     try {
-        const response = await api.post("user/logout/");
+        const response = await api.get("user/logout/");
         return response.data
     } catch(err) {
         console.error(err)
@@ -35,7 +35,22 @@ export const logout = async () => {
     }
 };
 
-export const checkAuth = async() => {
+export const checkAuth = async () => {
     const response = await api.post("user/status/")
+    return response.data
+}
+
+export const get_search = async (term) => {
+    const response = await api.get("search/", {params: { query: term }})
+    return response.data
+}
+
+export const get_book_details = async (id) => {
+    const response = await api.get(`book-details/`, {params: { id: id }})
+    return response.data
+}
+
+export const get_movie_details = async (id) => {
+    const response = await api.get(`movie-details/`, {params: { id: id }})
     return response.data
 }
