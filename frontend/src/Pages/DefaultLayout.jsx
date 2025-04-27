@@ -4,7 +4,7 @@ import Sidebar from "../Components/Sidebar";
 function DefaultLayout(props){
     return(
         <>
-        <Header onSearch={props.handleSearch}/>
+        <Header/>
         <div className="mt-16 grid grid-cols-6 gap-8">
             <div className="col-span-1">
                 <div className="sticky top-16">
