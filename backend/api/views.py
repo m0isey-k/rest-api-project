@@ -120,7 +120,7 @@ def get_books(term):
     for item in response['items']:
         info = item['volumeInfo']
         thumbnail = info.get("imageLinks", {}).get("thumbnail", "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg")
-        authors = info.get("authors", "Unkown")
+        authors = info.get("authors", [])
 
         data.append({
             'id':  item.get('id', ''),
