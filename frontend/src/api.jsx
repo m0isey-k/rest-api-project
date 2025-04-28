@@ -40,6 +40,11 @@ export const checkAuth = async () => {
     return response.data
 }
 
+export const get_home = async () => {
+    const response = await api.get("home/")
+    return response.data
+}
+
 export const get_search = async (term) => {
     const response = await api.get("search/", {params: { query: term }})
     return response.data
