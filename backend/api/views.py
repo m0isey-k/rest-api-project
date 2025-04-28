@@ -109,8 +109,68 @@ class SearchView(APIView):
         res.extend(get_books(term))
         res.extend(get_movies(term))
         res.sort(key=lambda k: k['rating'], reverse=True)
+<<<<<<< HEAD
+
+=======
         
+>>>>>>> dev
         return Response(res)
+
+
+class HomeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, _):
+        res = []
+        res.extend(get_home_books())
+        res.extend(get_home_movies())
+        res.sort(key=lambda k: k['rating'], reverse=True)
+
+        return Response(res)
+
+
+
+def get_home_books():
+    genres = ['science-fiction', 'fantasy', 'mystery', 'thriller', 'romance', 'business', 'history']
+    books_url = f"https://www.googleapis.com/books/v1/volumes?q=subject:{random.choice(genres)}&orderBy=relevance&maxResults=40"
+    response = requests.get(books_url).json()
+    data = []
+    for item in response['items']:
+        info = item['volumeInfo']
+        thumbnail = info.get("imageLinks", {}).get("thumbnail", "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg")
+        authors = info.get("authors", [])
+        data.append({
+            'id':  item.get('id', ''),
+            'title': info.get('title', ''),
+            'thumbnail': thumbnail, 
+            'authors': authors,
+            'rating': info.get('averageRating', 0),
+            'type': 'book',
+            })
+    return data 
+
+
+def get_home_movies():
+    headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {os.getenv('BEARER_TOKEN')}"
+            }
+    all_results = []
+    for i in range(1,3):
+        url = f"https://api.themoviedb.org/3/movie/popular?page={i}"
+        response = requests.get(url, headers=headers).json()
+        all_results.extend(response['results'])
+    data = []
+    for item in all_results:
+        data.append({ 
+                     'id':  item.get('id', ''),
+                     'title': item.get('title', ''),
+                     'thumbnail': f"https://image.tmdb.org/t/p/original/{item['poster_path']}" if item['poster_path'] else "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+                     'rating': item.get('vote_average', 0) / 2,
+                     'type': 'movie',
+                     })
+    return data  
+
 
 
 def get_books(term):   
@@ -131,7 +191,6 @@ def get_books(term):
             'rating': info.get('averageRating', 0),
             'type': 'book',
             })
-
     return data
 
 

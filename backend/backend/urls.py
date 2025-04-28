@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from api.views import BookDetailsView, CreateUserView, CustomTokenObtainPairView, LogoutView, IsAuthenticatedView, MovieDetailsView, SearchView
+from api.views import BookDetailsView, CreateUserView, CustomTokenObtainPairView, LogoutView, IsAuthenticatedView, MovieDetailsView, HomeView, SearchView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from rest_framework import permissions
@@ -30,6 +30,7 @@ urlpatterns = [
     path("api/user/status/", IsAuthenticatedView.as_view(), name="is_authenticated"),
     path("api/token/", CustomTokenObtainPairView.as_view(), name="get_token"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
+    path("api/home/", HomeView.as_view(), name="home"),
     path("api/search/", SearchView.as_view(), name="search"),
     path("api/book-details/", BookDetailsView.as_view(), name="book_details"),
     path("api/movie-details/", MovieDetailsView.as_view(), name="movie_details"),
