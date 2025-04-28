@@ -109,7 +109,11 @@ class SearchView(APIView):
         res.extend(get_books(term))
         res.extend(get_movies(term))
         res.sort(key=lambda k: k['rating'], reverse=True)
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> dev
         return Response(res)
 
 
