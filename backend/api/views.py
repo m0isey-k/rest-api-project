@@ -108,7 +108,7 @@ class SearchView(APIView):
         res = [] 
         res.extend(get_books(term))
         res.extend(get_movies(term))
-        random.shuffle(res) # TODO sort list
+        res.sort(key=lambda k: k['rating'], reverse=True)
         return Response(res)
 
 
@@ -127,9 +127,9 @@ def get_books(term):
             'title': info.get('title', ''),
             'thumbnail': thumbnail, 
             'authors': authors,
+            'rating': info.get('averageRating', 0),
             'type': 'book',
             })
-
     return data
 
 
@@ -150,6 +150,7 @@ def get_movies(term):
                      'id':  item.get('id', ''),
                      'title': item.get('title', ''),
                      'thumbnail': f"https://image.tmdb.org/t/p/original/{item['poster_path']}" if item['poster_path'] else "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+                     'rating': item.get('vote_average', 0) / 2,
                      'type': 'movie',
                      })
     return data  
@@ -173,6 +174,7 @@ class MovieDetailsView(APIView):
                 'description': response.get('overview', ''),
                 'categories': [genre["name"] for genre in response["genres"]],
                 'thumbnail': f"https://image.tmdb.org/t/p/original/{response['poster_path']}" if response['poster_path'] else "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+                'rating': response.get('vote_average', 0) / 2,
                 'runtime': response.get('runtime', '')
                 }
 
@@ -198,6 +200,7 @@ class BookDetailsView(APIView):
                 'description': decription, 
                 'categories': info.get("categories", []),
                 'thumbnail': info.get("imageLinks", {}).get("medium", "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"),
+                'rating': response.get('averageRating', 0) / 2,
                 'pageCount': info.get('pageCount', 0),
                 }
 
