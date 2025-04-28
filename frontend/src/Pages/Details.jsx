@@ -38,13 +38,14 @@ function Details(){
             <img src={data.thumbnail} className="w-80 rounded-xl object-cover border border-surface-a30 select-none"/>
             <div className="mx-8 text-white text-lg">
                 <p className="text-xl font-medium">{data.title}</p>
-                <p className="font-medium cursor-pointer hover:text-primary-a0 transition mb-4">{data.authors.join(" / ")}</p> {/* TODO search by author */} 
+                <p className="font-medium cursor-pointer hover:text-primary-a0 transition mb-4">{data.authors?.join(" / ")}</p> {/* TODO search by author */} 
                 <p>{data.description}</p>
                 <p className="my-2 font-medium">{data.categories.join(" / ")}</p>
                 <div className="flex">
-                <p className="font-medium mr-2">{data.pageCount ? "Pages: " : "Runtime: "}</p>
+                    <p className="font-medium mr-2">{data.pageCount ? "Pages: " : "Runtime: "}</p>
                     <p>{data.pageCount || data.runtime + "m"}</p>
                 </div>
+                <p className="mt-2">Rating: {data.rating === 0 ? "N/A" : `${Math.round(data.rating * 10) / 10} / 5`}</p>
             </div>
         </div>
         }/>

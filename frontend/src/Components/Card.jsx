@@ -5,6 +5,7 @@ function Card(props){
             <div className="mx-4 my-2 text-white">
                 <p className="font-medium">{props.title}</p>
                 <p>{props.authors}</p>
+                <p>Rating: {props.rating === 0 ? "N/A" : `${Math.round(props.rating * 10) / 10} / 5`}</p>
             </div>
         </div>
     );
