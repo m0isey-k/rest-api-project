@@ -42,9 +42,10 @@ function Details(){
                 <p>{data.description}</p>
                 <p className="my-2 font-medium">{data.categories.join(" / ")}</p>
                 <div className="flex">
-                <p className="font-medium mr-2">{data.pageCount ? "Pages: " : "Runtime: "}</p>
+                    <p className="font-medium mr-2">{data.pageCount ? "Pages: " : "Runtime: "}</p>
                     <p>{data.pageCount || data.runtime + "m"}</p>
                 </div>
+                <p className="mt-2">Rating: {data.rating === 0 ? "N/A" : `${Math.round(data.rating * 10) / 10} / 5`}</p>
             </div>
         </div>
         }/>

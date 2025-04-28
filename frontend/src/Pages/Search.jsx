@@ -15,7 +15,7 @@ function Search(){
                 const data = await get_search(term)
                 setCards([])
                 data.map(item => {
-setCards(p => [...p, <Card key={item.id} title={item.title} thumbnail={item.thumbnail} authors={item.authors} onClick={() => navigate(`/${item.type}/${item.id}`)} />])
+setCards(p => [...p, <Card key={item.id} title={item.title} thumbnail={item.thumbnail} authors={item.authors} rating={item.rating} onClick={() => navigate(`/${item.type}/${item.id}`)} />])
                 }) 
             } catch (error) {
                 console.error("Error fetching data:", error)
