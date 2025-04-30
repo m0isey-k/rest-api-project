@@ -74,10 +74,14 @@ function Header(){
                             </a>
                             </li>
                         )}
+                            <li className={`px-6 py-2 text-sm  hover:text-white transition`}>
+                                <p onClick={handleLogout}>
+                                <i className="fa-solid fa-right-from-bracket pr-2"></i>
+                                Logout</p>
+                            </li>
                         </ul>
                     </div>
                     <a href="/" className="text-white cursor-pointer font-medium">Home</a>
-                    <p onClick={handleLogout} className="text-white pl-2">Logout</p>
                 </div>
             </div>
         </nav>
