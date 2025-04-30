@@ -111,11 +111,7 @@ class SearchView(APIView):
         res.extend(get_books(term))
         res.extend(get_movies(term))
         res.sort(key=lambda k: k['rating'], reverse=True)
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 0878ecbf451e2f9b177f3033d430a6d1d826cb24
         return Response(res)
 
 
@@ -222,7 +218,7 @@ def get_movies(term):
 class MovieDetailsView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request): # WIP
+    def get(self, request):
         id = request.GET.get("id")
         url = f"https://api.themoviedb.org/3/movie/{id}?language=en-US"
         headers = {
