@@ -2,6 +2,8 @@ import DefaultLayout from "./DefaultLayout";
 import Card from "../Components/Card";
 import { useState, useEffect } from "react";
 import { get_search } from "../api";
+import { useParams } from "react-router-dom";
+
 
 function Search(){
     const [cards, setCards] = useState([]) 
