@@ -59,3 +59,17 @@ export const get_movie_details = async (id) => {
     const response = await api.get(`movie-details/`, {params: { id: id }})
     return response.data
 }
+
+export const add_collection_item = async (id, data) => {
+    console.log(data)
+    const response = await api.post('create-item/', {
+        item_id: id,
+        title: data.title,
+        thumbnail: data.thumbnail,
+        author: 'test',
+        rating: data.rating,
+        type: data.type,
+        collection: data.collection,
+    })
+    return response.data
+}

@@ -2,7 +2,9 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer
+
+from api.models import CollectionItem
+from .serializers import CollectionItemSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
@@ -225,6 +227,10 @@ class MovieDetailsView(APIView):
                 }
 
         response = requests.get(url, headers=headers).json()
+
+        items = getItemById(id)
+        collections = [item.collection for item in items or []]
+
         data = {
                 'id':  response.get('id', ''),
                 'title': response.get('title', ''),
@@ -232,7 +238,9 @@ class MovieDetailsView(APIView):
                 'categories': [genre["name"] for genre in response["genres"]],
                 'thumbnail': f"https://image.tmdb.org/t/p/original/{response['poster_path']}" if response['poster_path'] else "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
                 'rating': response.get('vote_average', 0) / 2,
-                'runtime': response.get('runtime', '')
+                'runtime': response.get('runtime', ''),
+                'collections': collections,
+                'type': 'movie'
                 }
 
         return Response(data)
@@ -247,6 +255,9 @@ class BookDetailsView(APIView):
         response = requests.get(url).json()
         info = response['volumeInfo']
 
+        items = getItemById(id)
+        collections = [item.collection for item in items or []]
+
         decription = info.get("decription", "")
         decription = decription.replace('<br>', '').replace('<p>', '').replace('</p>', '')
 
@@ -259,6 +270,23 @@ class BookDetailsView(APIView):
                 'thumbnail': info.get("imageLinks", {}).get("medium", "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"),
                 'rating': response.get('averageRating', 0) / 2,
                 'pageCount': info.get('pageCount', 0),
+                'type': 'book',
+                'collections': collections,
                 }
 
         return Response(data) 
+
+
+class CreateCollectionItem(generics.CreateAPIView):
+    serializer_class = CollectionItemSerializer 
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+def getItemById(item_id):
+    try:
+        return CollectionItem.objects.filter(item_id=item_id)
+    except CollectionItem.DoesNotExist:
+        return None
