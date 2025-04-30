@@ -61,7 +61,6 @@ export const get_movie_details = async (id) => {
 }
 
 export const add_collection_item = async (id, data) => {
-    console.log(data)
     const response = await api.post('create-item/', {
         item_id: id,
         title: data.title,
@@ -70,6 +69,16 @@ export const add_collection_item = async (id, data) => {
         rating: data.rating,
         type: data.type,
         collection: data.collection,
+    })
+    return response.data
+}
+
+export const delete_collection_item = async (item_id, collection) => {
+    const response = await api.delete('delete-item/', {
+        data: {
+            item_id: item_id,
+            collection: collection
+        }
     })
     return response.data
 }

@@ -285,6 +285,19 @@ class CreateCollectionItem(generics.CreateAPIView):
         serializer.save(user=self.request.user)
 
 
+class DeleteCollectionItem(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        item_id = request.data.get("item_id")
+        collection = request.data.get("collection")
+        try:
+            CollectionItem.objects.get(user=request.user, item_id=item_id, collection=collection).delete()
+            return Response({'detail': 'Item deleted successfully'})
+        except CollectionItem.DoesNotExist:
+            return Response({'detail': 'Item not found'})
+
+
 def getItemById(item_id):
     try:
         return CollectionItem.objects.filter(item_id=item_id)

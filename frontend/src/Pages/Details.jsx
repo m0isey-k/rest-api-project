@@ -2,7 +2,7 @@ import DefaultLayout from "./DefaultLayout"
 import Loading from "../Components/Loading"
 
 import { useParams } from "react-router-dom"
-import { get_book_details, get_movie_details, add_collection_item } from "../api"
+import { get_book_details, get_movie_details, add_collection_item, delete_collection_item } from "../api"
 import { useState, useEffect, useRef } from "react"
 
 function Details(){
@@ -57,11 +57,21 @@ function Details(){
         fetchData()
     }, [id])
     
-    const handleClick = async (collection) => {
+    const handleAdd = async (collection) => {
         const updatedData = { ...data, collection }
         setData(updatedData)
         setActiveCollections(p => ([...p, collection]))
         await add_collection_item(id, updatedData)
+    }
+
+    const handleDelete = async (item_id, collection) => {
+        const index = activeCollections.indexOf(collection);
+        if (index > -1) {
+            const updatedCollections = [...activeCollections]
+            updatedCollections.splice(index, 1)
+            setActiveCollections(updatedCollections)
+            await delete_collection_item(item_id, collection)
+        }
     }
 
     return(
@@ -80,14 +90,13 @@ function Details(){
                     <p>{data.pageCount || data.runtime + "m"}</p>
                 </div>
                 <p className="mt-2">Rating: {data.rating === 0 ? "N/A" : `${Math.round(data.rating * 10) / 10} / 5`}</p>
-                <p>{data.collections}</p>
                 <div className="inline-block mt-2">
                     <button ref={buttonRef} onClick={() => setDropdownOpen((p) => !p)} className="px-4 py-1 border border-primary-a0 rounded-full shadow-primary-a0 hover:shadow-[0_0_5px_1px] transition hover:bg-primary-a0 focus:bg-primary-a0 focus:shadow-[0_0_5px_1px]">Add<i className="fa-solid fa-caret-down ml-2"></i></button>
                     <div ref={dropdownRef}
                         className={`mt-2 shadow-[0_0_1px_1px] shadow-primary-a0 rounded-xl bg-surface-a10 transition ${dropdownOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}>
                         <ul className="text-surface-a50 py-2 select-none">
                         {dropdownItems.map((item, index) =>
-                            <li key={index} className={`mx-4 my-3 px-4 py-2 text-sm rounded-full hover:text-white cursor-pointer transition ${activeCollections.includes(item.toLowerCase()) ? "text-white bg-primary-a0 " : "bg-surface-a20"}`} onClick={() => handleClick(item.toLowerCase())}>
+                            <li key={index} className={`mx-4 my-3 px-4 py-2 text-sm rounded-full hover:text-white cursor-pointer transition ${activeCollections.includes(item.toLowerCase()) ? "text-white bg-primary-a0 " : "bg-surface-a20"}`} onClick={() => activeCollections.includes(item.toLowerCase()) ? handleDelete(id, item.toLowerCase()) : handleAdd(item.toLowerCase())}>
                             <i className={`fa-solid fa-${dropdownIcons[index]} pr-2`}></i>
                             {item} 
                             </li>
