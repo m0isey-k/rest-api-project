@@ -303,3 +303,17 @@ def getItemById(item_id):
         return CollectionItem.objects.filter(item_id=item_id)
     except CollectionItem.DoesNotExist:
         return None
+
+
+class CollectionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        collection = request.GET.get("collection")
+        if collection in ("books", "movies"):
+            data = CollectionItem.objects.filter(user=request.user, type=collection[0:-1])
+        else:
+            data = CollectionItem.objects.filter(user=request.user, collection=collection)
+        serializer = CollectionItemSerializer(data, many=True)
+
+        return Response(serializer.data)

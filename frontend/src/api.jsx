@@ -82,3 +82,8 @@ export const delete_collection_item = async (item_id, collection) => {
     })
     return response.data
 }
+
+export const get_collection = async (collection) => {
+    const response = await api.get('get-collection/', {params: {collection: collection}})
+    return response.data
+}
