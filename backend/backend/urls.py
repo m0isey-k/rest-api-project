@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from api.views import BookDetailsView, CollectionView, CollectionsByUser, CreateUserView, CustomTokenObtainPairView, DeleteCollectionItem, LogoutView, IsAuthenticatedView, MovieDetailsView, HomeView, SearchView, CreateCollectionItem
 from rest_framework_simplejwt.views import TokenRefreshView
-
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
