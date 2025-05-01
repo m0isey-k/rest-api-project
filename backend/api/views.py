@@ -321,7 +321,7 @@ class CollectionView(APIView):
 
         return Response(serializer.data)
 
-
+      
 class CollectionsByUser(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -329,4 +329,3 @@ class CollectionsByUser(APIView):
         data = CollectionItem.objects.filter(user=request.user).exclude(collection='favorites').values_list('collection', flat=True).distinct().order_by('collection')
 
         return Response({'collections': data})
-
