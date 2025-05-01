@@ -65,7 +65,6 @@ export const add_collection_item = async (id, data) => {
         item_id: id,
         title: data.title,
         thumbnail: data.thumbnail,
-        author: 'test',
         rating: data.rating,
         type: data.type,
         collection: data.collection,
@@ -86,4 +85,9 @@ export const delete_collection_item = async (item_id, collection) => {
 export const get_collection = async (collection) => {
     const response = await api.get('get-collection/', {params: {collection: collection}})
     return response.data
+}
+
+export const get_user_collections = async () => {
+    const response = await api.get('user/get-collections/')
+    return response.data.collections
 }
