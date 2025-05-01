@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework import generics
+from django.db.models import Min
+
 
 from api.models import CollectionItem
 from .serializers import CollectionItemSerializer, UserSerializer
@@ -311,9 +313,19 @@ class CollectionView(APIView):
     def get(self, request):
         collection = request.GET.get("collection")
         if collection in ("books", "movies"):
-            data = CollectionItem.objects.filter(user=request.user, type=collection[0:-1])
+            item_ids = CollectionItem.objects.filter(user=request.user, type=collection[:-1]).values('item_id').annotate(id=Min('id'))
+            data = CollectionItem.objects.filter(id__in=[item['id'] for item in item_ids])
         else:
             data = CollectionItem.objects.filter(user=request.user, collection=collection)
         serializer = CollectionItemSerializer(data, many=True)
 
         return Response(serializer.data)
+
+      
+class CollectionsByUser(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        data = CollectionItem.objects.filter(user=request.user).exclude(collection='favorites').values_list('collection', flat=True).distinct().order_by('collection')
+
+        return Response({'collections': data})

@@ -13,7 +13,6 @@ function Collection(){
         const fetchData = async () => {
             try {
                 const data = await get_collection(collection)
-                console.log(data)
                 setCards([])
                 data.map(item => {
                     setCards(p => [...p, <Card key={item.item_id} title={item.title} thumbnail={item.thumbnail} authors={item.authors} rating={item.rating} link={`/${item.type}/${item.item_id}`} />])

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router";
 import Input from "../Components/Input";
-import axios from "axios";
 import { signup } from "../api";
 
 const USER_REGEX = /^(?=.{3,}$)[a-z0-9]+(_|-)*[a-z0-9]+$/;
@@ -40,7 +39,7 @@ function SignUp() {
             return;
         }
         try {
-            const response = await signup(user.value, email.value, pwd.value);
+            await signup(user.value, email.value, pwd.value);
             navigate('/')
         }
         catch(err) {
