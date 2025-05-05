@@ -11,7 +11,6 @@ class CollectionItem(models.Model):
         item_id = models.CharField(max_length=20)
         title = models.CharField(max_length=255)
         thumbnail = models.CharField()
-        author = models.CharField(max_length=255, blank=True, null=True)
         rating = models.FloatField(blank=True, null=True)
         type = models.CharField(choices=TYPE_CHOICES)
         collection = models.CharField(max_length=20)

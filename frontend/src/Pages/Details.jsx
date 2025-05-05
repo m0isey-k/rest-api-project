@@ -2,7 +2,7 @@ import DefaultLayout from "./DefaultLayout"
 import Loading from "../Components/Loading"
 
 import { useParams } from "react-router-dom"
-import { get_book_details, get_movie_details, add_collection_item, delete_collection_item } from "../api"
+import { get_book_details, get_movie_details, add_collection_item, delete_collection_item, get_user_collections } from "../api"
 import { useState, useEffect, useRef } from "react"
 
 function Details(){
@@ -10,7 +10,9 @@ function Details(){
     const [data, setData] = useState()
     const [activeCollections, setActiveCollections] = useState([])
 
-    const dropdownItems = ['Favorites', 'Collection 1', 'Collection 2']
+    const [collections, setCollections] = useState(['favorites'])
+    const [newCollection, setNewCollection] = useState('')
+    const [addedCollection, setAddedCollection] = useState('')
     const dropdownIcons = ['bookmark', 'layer-group', 'layer-group']
 
     const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -50,6 +52,9 @@ function Details(){
                         setActiveCollections(result.collections)
                         break;
                 }
+                const userCollections = await get_user_collections()
+                setCollections(p => [...p, ...userCollections])
+
             } catch (error) {
                 console.error("Error fetching data:", error)
             }
@@ -64,25 +69,43 @@ function Details(){
         await add_collection_item(id, updatedData)
     }
 
-    const handleDelete = async (item_id, collection) => {
+    const handleDelete = async (collection) => {
         const index = activeCollections.indexOf(collection);
         if (index > -1) {
             const updatedCollections = [...activeCollections]
             updatedCollections.splice(index, 1)
             setActiveCollections(updatedCollections)
-            await delete_collection_item(item_id, collection)
+            await delete_collection_item(id, collection)
         }
+    }
+    
+    const handleAddCollection = async (e) => {
+        e.preventDefault();
+        if(!collections.includes(newCollection)) {
+            setCollections(p => [...p, newCollection])
+            await handleAdd(newCollection)
+        }
+        setAddedCollection(newCollection)
+        setNewCollection('')
+    }
+    
+    const titleCase = (str) => {
+        let splitStr = str.toLowerCase().split(' ');
+        for (let i = 0; i < splitStr.length; i++) {
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+        }
+        return splitStr.join(' '); 
     }
 
     return(
         data ? (
         <>
-        <DefaultLayout title={data.title} content={
+        <DefaultLayout newCollection={addedCollection} title={data.title} content={
         <div className="mt-4 flex">
-            <img src={data.thumbnail} className="w-80 rounded-xl object-cover border border-surface-a30 select-none"/>
+            <img src={data.thumbnail} className="h-140 rounded-xl object-cover border border-surface-a30 select-none"/>
             <div className="mx-8 text-white text-lg">
                 <p className="text-xl font-medium">{data.title}</p>
-                <p className="font-medium cursor-pointer hover:text-primary-a0 transition mb-4">{data.authors?.join(" / ")}</p> {/* TODO search by author */} 
+                <p className="font-medium cursor-pointer hover:text-primary-a0 transition mb-4">{data.authors?.join(" / ")}</p>
                 <p>{data.description}</p>
                 <p className="my-2 font-medium">{data.categories.join(" / ")}</p>
                 <div className="flex">
@@ -95,12 +118,22 @@ function Details(){
                     <div ref={dropdownRef}
                         className={`mt-2 shadow-[0_0_1px_1px] shadow-primary-a0 rounded-xl bg-surface-a10 transition ${dropdownOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}>
                         <ul className="text-surface-a50 py-2 select-none">
-                        {dropdownItems.map((item, index) =>
-                            <li key={index} className={`mx-4 my-3 px-4 py-2 text-sm rounded-full hover:text-white cursor-pointer transition ${activeCollections.includes(item.toLowerCase()) ? "text-white bg-primary-a0 " : "bg-surface-a20"}`} onClick={() => activeCollections.includes(item.toLowerCase()) ? handleDelete(id, item.toLowerCase()) : handleAdd(item.toLowerCase())}>
-                            <i className={`fa-solid fa-${dropdownIcons[index]} pr-2`}></i>
-                            {item} 
+                        {collections.map((item, index) =>
+                            <li key={index} className={`mx-4 my-3 px-4 py-2 text-sm rounded-full hover:text-white cursor-pointer transition ${activeCollections.includes(item) ? "text-white bg-primary-a0 " : "bg-surface-a20"}`} onClick={() => activeCollections.includes(item) ? handleDelete(item) : handleAdd(item)}>
+                            <i className={`fa-solid fa-${item === "favorites" ? dropdownIcons[0] : dropdownIcons[1]} pr-2`}></i>
+                            {titleCase(item)} 
                             </li>
                         )}
+                            <li key="new-collection" className={`mx-4 my-3 px-4 py-2 text-sm rounded-full text-white cursor-pointer transition bg-surface-a20`} >
+                                <form onSubmit={handleAddCollection}>
+                                    <input
+                                        placeholder="New"
+                                        className="focus:outline-none w-full field-sizing-content"
+                                        type="text"
+                                        value={newCollection}
+                                        onChange={e => setNewCollection(e.target.value.toLowerCase())}/>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 </div>

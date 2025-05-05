@@ -32,7 +32,7 @@ function Login(){
             return;
         }
         try {
-            const response = await login(user.value, pwd.value);
+            await login(user.value, pwd.value);
             navigate('/')
         }
         catch(err) {
