@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from api.views import BookDetailsView, CreateUserView, CustomTokenObtainPairView, LogoutView, IsAuthenticatedView, MovieDetailsView, HomeView, SearchView, CreateCollectionItem
+from api.views import BookDetailsView, CollectionView, CollectionsByUser, CreateUserView, CustomTokenObtainPairView, DeleteCollectionItem, LogoutView, IsAuthenticatedView, MovieDetailsView, HomeView, SearchView, CreateCollectionItem
 from rest_framework_simplejwt.views import TokenRefreshView
-
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -35,5 +34,8 @@ urlpatterns = [
     path("api/book-details/", BookDetailsView.as_view(), name="book_details"),
     path("api/movie-details/", MovieDetailsView.as_view(), name="movie_details"),
     path("api/create-item/", CreateCollectionItem.as_view(), name="create_item"),
+    path("api/delete-item/", DeleteCollectionItem.as_view(), name="delete_item"),
+    path("api/get-collection/", CollectionView.as_view(), name="get_collection"),
+    path("api/user/get-collections/", CollectionsByUser.as_view(), name="get_collections"),
     path("api-auth/", include("rest_framework.urls")),
 ]

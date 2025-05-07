@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework import generics
+from django.db.models import Min
+
 
 from api.models import CollectionItem
 from .serializers import CollectionItemSerializer, UserSerializer
@@ -285,8 +287,45 @@ class CreateCollectionItem(generics.CreateAPIView):
         serializer.save(user=self.request.user)
 
 
+class DeleteCollectionItem(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        item_id = request.data.get("item_id")
+        collection = request.data.get("collection")
+        try:
+            CollectionItem.objects.get(user=request.user, item_id=item_id, collection=collection).delete()
+            return Response({'detail': 'Item deleted successfully'})
+        except CollectionItem.DoesNotExist:
+            return Response({'detail': 'Item not found'})
+
+
 def getItemById(item_id):
     try:
         return CollectionItem.objects.filter(item_id=item_id)
     except CollectionItem.DoesNotExist:
         return None
+
+
+class CollectionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        collection = request.GET.get("collection")
+        if collection in ("books", "movies"):
+            item_ids = CollectionItem.objects.filter(user=request.user, type=collection[:-1]).values('item_id').annotate(id=Min('id'))
+            data = CollectionItem.objects.filter(id__in=[item['id'] for item in item_ids])
+        else:
+            data = CollectionItem.objects.filter(user=request.user, collection=collection)
+        serializer = CollectionItemSerializer(data, many=True)
+
+        return Response(serializer.data)
+
+      
+class CollectionsByUser(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        data = CollectionItem.objects.filter(user=request.user).exclude(collection='favorites').values_list('collection', flat=True).distinct().order_by('collection')
+
+        return Response({'collections': data})
