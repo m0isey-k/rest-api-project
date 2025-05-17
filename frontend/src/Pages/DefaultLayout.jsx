@@ -5,6 +5,7 @@ import { change_collection_name } from "../api";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function DefaultLayout(props){
+    const defaultCollections = ['favorites', 'books', 'movies']
     const [isEditing, setIsEditing] = useState(false)
     const [title, setTitle] = useState(props.title)
     const [sidebarTrigger, setSidebarTrigger] = useState(false)
@@ -13,7 +14,7 @@ function DefaultLayout(props){
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if(title && !['favorites', 'books', 'movies'].includes(title.toLowerCase())){
+        if(title && !defaultCollections.includes(title.toLowerCase())){
             await change_collection_name(props.title, title)
             setSidebarTrigger(p => !p)
             navigate(`/collection/${title}`)        
@@ -44,7 +45,7 @@ function DefaultLayout(props){
                     :    
                     <p className="text-xl text-white">{title}</p>
                     }
-                    {(['favorites', 'books', 'movies'].includes(props.title) || !location.pathname.startsWith('/collection/')) ? '' :
+                    {(defaultCollections.includes(props.title) || !location.pathname.startsWith('/collection/')) ? '' :
                     <i className="fa-solid fa-pen-to-square my-auto ml-2 text-surface-a20 hover:text-white transition cursor-pointer" onClick={() => setIsEditing(true)}></i>
                         } 
                 </div>
