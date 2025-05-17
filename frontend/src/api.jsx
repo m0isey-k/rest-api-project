@@ -91,3 +91,9 @@ export const get_user_collections = async () => {
     const response = await api.get('user/get-collections/')
     return response.data.collections
 }
+
+export const change_collection_name = async(old_name, new_name) => {
+    const response = await api.put('change-collection-name/', {"old_name": old_name, "new_name": new_name})
+
+    return response.data
+}
