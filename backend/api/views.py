@@ -124,6 +124,12 @@ class HomeView(APIView):
         res = []
         res.extend(get_home_books())
         res.extend(get_home_movies())
+        unique_items = {}
+        for item in res:
+            if item['id'] not in unique_items:
+                unique_items[item['id']] = item
+
+        res = list(unique_items.values())
         res.sort(key=lambda k: k['rating'], reverse=True)
 
         return Response(res)
