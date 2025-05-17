@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react"
 import { get_user_collections } from "../api"
 
-function Sidebar({ newCollection }){
-    const [collections, setCollections] = useState(['Favorites', 'Books', 'Movies'])
+function Sidebar({ newCollection, updateTrigger }){
+    const [collections, setCollections] = useState([])
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const userCollections = await get_user_collections()
-                setCollections(p => [...p, ...userCollections])
+                setCollections(['Favorites', 'Books', 'Movies', ...userCollections])
 
             } catch (error) {
                 console.error("Error fetching data:", error)
             }
         }
         fetchData()
-    }, [])
+    }, [updateTrigger])
     useEffect(() => {
         if(newCollection && !collections.includes(newCollection)) {
             setCollections(p => [...p, newCollection])
