@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 function Header(){
     const [term, setTerm] = useState("")
     const navigate = useNavigate()
-    const dropdownItems = ['Books', 'Films', 'Games']
-    const dropdownIcons = ['book', 'film', 'gamepad']
+    const dropdownItems = ['Favorites', 'Books', 'Movies']
+    const dropdownIcons = ['bookmark', 'book', 'film']
 
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const dropdownRef = useRef(null)
@@ -68,7 +68,7 @@ function Header(){
                         <ul className="text-surface-a50 py-2">
                         {dropdownItems.map((item, index) =>
                             <li key={index} className={`px-6 py-2 text-sm  hover:text-white transition`}>
-                            <a href={`/${item.toLowerCase()}`}>
+                            <a href={`/collection/${item.toLowerCase()}`}>
                             <i className={`fa-solid fa-${dropdownIcons[index]} pr-2`}></i>
                             {item} 
                             </a>

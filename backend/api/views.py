@@ -124,6 +124,12 @@ class HomeView(APIView):
         res = []
         res.extend(get_home_books())
         res.extend(get_home_movies())
+        unique_items = {}
+        for item in res:
+            if item['id'] not in unique_items:
+                unique_items[item['id']] = item
+
+        res = list(unique_items.values())
         res.sort(key=lambda k: k['rating'], reverse=True)
 
         return Response(res)
@@ -329,3 +335,17 @@ class CollectionsByUser(APIView):
         data = CollectionItem.objects.filter(user=request.user).exclude(collection='favorites').values_list('collection', flat=True).distinct().order_by('collection')
 
         return Response({'collections': data})
+
+class ChangeCollectionName(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        user = request.user
+        old_name = request.data.get('old_name')
+        new_name = request.data.get('new_name')
+
+        updated_count = CollectionItem.objects.filter(user=user, collection=old_name).update(collection=new_name)
+
+        return Response({'updated': updated_count})
+
+
