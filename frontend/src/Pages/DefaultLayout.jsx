@@ -15,7 +15,6 @@ function DefaultLayout(props){
     const handleSubmit = async (e) => {
         e.preventDefault()
         if(title && !defaultCollections.includes(title.toLowerCase())){
-        if(title && !['favorites', 'books', 'movies'].includes(title.toLowerCase())){
             await change_collection_name(props.title, title)
             setSidebarTrigger(p => !p)
             navigate(`/collection/${title}`)        
